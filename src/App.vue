@@ -1,39 +1,65 @@
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
 
-const str = ref('')
-const list = ref([
-  {
-    is_completed: false,
-    text: 'Learn Vue.js'
-  },
-  {
-    is_completed: true,
-    text: 'Learn python'
-  },
-  {
-    is_completed: false,
-    text: 'Learn llm'
-  },
-  {
-    is_completed: false,
-    text: 'Learn java'
-  },
-])
 
-function add(){
-  list.value.push({
-    is_completed: false,
-    text: str.value
+getList()
+const list = ref([])
+const str = ref('')
+
+
+async function getList() {
+  const res =  await axios({
+  url: 'https://p181f90pve.hzh.sealos.run/getList',
+  method: 'get',
+})
+list.value = res.data.data
+
+console.log(list.value)
+
+}
+
+
+async function add(){
+  const res = await axios({
+    url: 'https://p181f90pve.hzh.sealos.run/add_todo',
+    method: 'post',
+    data: {
+      text: str.value,
+      is_completed: false
+    }
   })
+  await getList()
+  console.log(res.data)
   str.value = ''
 }
 
-function del(index){
+async function update(index){
+  console.log(index)
+  const res = await axios({
+    url: 'https://p181f90pve.hzh.sealos.run/update',
+    method: 'get',
+    params: {
+      id: index,
+    }
+  })
+  await getList()
+  console.log(res.data)
+}
+
+async function del(index){
+  const res = await axios({
+    url: 'https://p181f90pve.hzh.sealos.run/del',
+    method: 'get',
+    params: {
+      id: index,
+    }
+  })
   // 从index 开始删除一个元素
-  list.value.splice(index,1)
+  await getList()
+  console.log(res.data)
 }
 
 </script>
@@ -55,11 +81,11 @@ function del(index){
 
         <div  v-for="(item,index) in list" :class = "[item.is_completed ? 'completed' : 'item']">
             <div>
-                <input v-model="item.is_completed" type="checkbox">
+                <input @click="update(item._id)" v-model = "item.is_completed" type="checkbox">
                 <span class="name">{{item.text}}</span>
             </div>
             
-            <div  @click="del(index)" class ="del">del</div>
+            <div  @click="del(item._id)" class ="del">del</div>
         </div>
 
        

@@ -95,3 +95,134 @@ console.log(str1.value);
     </div>
 
   ```
+
+  - 侦听器：监听数据的变化
+  ```
+    const str = ref('')
+
+    function change(){
+    console.log(str.value)
+    }
+
+    watch(str,change)
+    <input  v-model="str" type="text" >
+  ```
+  监听变化前后的值
+  ```
+    watch(str,(newValue,oldValue)=>{const str = ref('')
+
+    function change(newValue,oldValue){
+    console.log("新值："+newValue, "旧值："+oldValue)
+    }
+
+    watch(str,change)
+
+  ```
+  深度监听：当监听的数据为对象时，监听的对象的属性也会被监听
+  ```
+    const str = ref({
+    text:""
+    })
+
+    function change(newValue,oldValue){
+    console.log("新值："+newValue, "旧值："+oldValue)
+    }
+
+    watch(str,change,{deep:true})
+
+    <input  v-model="str.text" type="text" >
+
+  ```
+
+- v-show 和v-if 控制页面是否显示
+- v-show 是通过display:none;控制页面是否显示
+- v-if 是直接不创建相关页面
+
+- 组件：
+  把可复用的页面封装成一个组件，组件可以复用，组件之间可以传递数据
+
+  在vue中，所有以.vue结尾的文件都可以看做一个组件  一般组件放在components文件夹下，组件命名后缀为.vue
+
+- 组件的使用:定义组件，在页面中导入组件，使用组件
+
+  - 父组件数据传递给子组件：在子组件中调用 defineProps()
+  ```
+  Buutton.vue
+
+  <script setup>
+    import {defineProps} from 'vue'
+    const props = defineProps(['text'])
+    </script>
+
+    <template>
+        <div class='button'>{{props.text}}</div>
+    </template>
+
+    <style scoped>
+    .button{
+        width: 30px;
+        height: 40px;
+        background-color: #ffff;
+        margin-top: 100px;
+    }
+    </style>
+  ```
+  ```
+  父组件中
+  import mybutton from './components/Button.vue'
+  <mybutton text = "添加"></mybutton>
+  <mybutton text = "删除"></mybutton>
+  ```
+  - 子组件向父组件传值
+  ```
+  <script setup>
+    import {defineProps,defineEmits} from 'vue'
+
+    const props = defineProps(['text'])
+    // 'ok'是自定义事件名称
+    const emit = defineEmits(['ok'])  
+
+    function send(){
+        emit('ok',"hello")
+    }
+
+    </script>
+
+    <template>
+        <div @click="send" class='button'>{{props.text}}</div>
+        
+    </template>
+
+    <style scoped>
+    .button{
+        width: 30px;
+        height: 40px;
+        background-color: #ffff;
+        margin-top: 100px;
+    }
+
+    </style>
+    ```
+    ```
+    function print(str){
+    console.log(str)
+    }
+    //监听ok时间
+    <mybutton @ok ='print' text = "添加"></mybutton>
+    ```
+    点击添加按钮后会打印出hello
+
+- axios 请求
+  - 安装axios ```npm install axios```
+  - 导入axios ```import axios from 'axios'```
+  - 使用
+    ```
+    async function getList() {
+        const res =  await axios({
+        url: '/api/todo/list',
+        method: 'get',
+            })
+        console.log(res)
+        }
+    ```
+- 云开发平台 ：https://hzh.sealos.run/signin
