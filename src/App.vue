@@ -1,6 +1,41 @@
 <script setup>
+import { ref } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+
+const str = ref('')
+const list = ref([
+  {
+    is_completed: false,
+    text: 'Learn Vue.js'
+  },
+  {
+    is_completed: true,
+    text: 'Learn python'
+  },
+  {
+    is_completed: false,
+    text: 'Learn llm'
+  },
+  {
+    is_completed: false,
+    text: 'Learn java'
+  },
+])
+
+function add(){
+  list.value.push({
+    is_completed: false,
+    text: str.value
+  })
+  str.value = ''
+}
+
+function del(index){
+  // 从index 开始删除一个元素
+  list.value.splice(index,1)
+}
+
 </script>
 
 <template>
@@ -12,38 +47,22 @@ import TheWelcome from './components/TheWelcome.vue'
 </head>
 <body>
     <div class="todo-app">
-        <div class="title"> xxx的Todo APP</div>
+        <div class="title"> xx的Todo APP</div>
         <div class="todo-form">
-            <input type="text" class="todo-input" placeholder="add a to do">
-            <div class="todo-button">Add todo</div>
+            <input  v-model="str" type="text" class="todo-input" placeholder="add a to do">
+            <div  @click="add" class="todo-button">Add todo</div>
         </div>
 
-        <div class="item completed">
+        <div  v-for="(item,index) in list" :class = "[item.is_completed ? 'completed' : 'item']">
             <div>
-                <input type="checkbox">
-                <span class="name">吃饭</span>
+                <input v-model="item.is_completed" type="checkbox">
+                <span class="name">{{item.text}}</span>
             </div>
             
-            <div class="del">del</div>
+            <div  @click="del(index)" class ="del">del</div>
         </div>
 
-        <div class="item">
-            <div>
-                <input type="checkbox">
-                <span class="name">吃饭</span>
-            </div>
-            
-            <div class="del">del</div>
-        </div>
-        
-        <div class="item">
-            <div>
-                <input type="checkbox">
-                <span class="name">吃饭</span>
-            </div>
-            
-            <div class="del">del</div>
-        </div>
+       
         
         
     </div>
@@ -53,6 +72,16 @@ import TheWelcome from './components/TheWelcome.vue'
 
 <style>
         .completed {
+           display: flex;
+            box-sizing: border-box;
+            width: 80%;
+            height: 50px;
+            margin: 8px auto;
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: rgba(149,157,165,0.2) 0px 8px 24px;
+            justify-content: space-between;
+            align-items: center;
             text-decoration: line-through;
             opacity: 0.5;
         }
